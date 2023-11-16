@@ -23,24 +23,17 @@ typedef struct node
 node;
 
 node* hashTable[131072] = {NULL};
-FILE* output = NULL;
 node* foundWords[131072] = {NULL};
 
 int main(void)
 {
-    output = fopen("output.txt", "w");
-    if (output == NULL)
-    {
-        printf("file error\n");
-        exit(1);
-    }
     char* word;
     int wordCount = 0;
     int foundWordCount = 0;
 
     
     word = readLine(16);
-    while (*word != '\0' && wordCount < max_len)
+    while (*word)
     {
         words[wordCount] = word;
         int wordCode = oaat(word, strlen(word), 17);
@@ -55,11 +48,11 @@ int main(void)
     
     int i;
 
+
     for (i = 0; i < wordCount; i++)
     {
         checkNodes(words[i]);
     }
-    fclose(output);
 
 }
 
@@ -92,7 +85,7 @@ char* readLine(int size)
         printf("Malloc err\n");
         exit(1);
     }
-    while ((ch = getchar()) != EOF && (ch != '\n') && (!isspace(ch)))
+    while ((ch = getchar()) != EOF && (ch != '\n'))
     {
         str[len++] = ch;
         if (len == size)
@@ -124,6 +117,13 @@ void checkNodes(char* word)
 
     int size1 = 16;
     int size2 = 16;
+
+    node* tmpmain = hashTable[initWordCode];
+
+    while (strcmp(word, tmpmain->word) != 0)
+    {
+        tmpmain = tmpmain->next;
+    }
 
     int wordLength = strlen(word);
     int i;
@@ -168,10 +168,9 @@ void checkNodes(char* word)
                         node* tmp2 = hashTable[word2Code];
                         while (tmp2 != NULL)
                         {
-                            if (strcmp(word2, tmp2->word) == 0 && !(hashTable[initWordCode]->wordFound))
+                            if (strcmp(word2, tmp2->word) == 0 && !(tmpmain->wordFound))
                             {
                                 printf("%s\n", word);
-                                fprintf(output, "%s\n", word);
                                 hashTable[initWordCode]->wordFound = 1;
                                 break;
                             }
